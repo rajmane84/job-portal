@@ -63,7 +63,7 @@ export default function LoginClient() {
   const isLoading = isMutationLoading || isAuthChecking;
 
   return (
-    <div className="flex h-full w-full items-center justify-center bg-slate-50/50 px-4 py-12 sm:px-6 lg:px-8">
+    <div className="flex h-[calc(100vh-4rem)] w-full items-center justify-center bg-slate-50/50 px-4 py-12 sm:px-6 lg:px-8">
       <div className="w-full max-w-sm">
         <Card className="border-none shadow-lg sm:border space-y-3">
           <CardHeader className="space-y-0.5 text-center">

@@ -60,7 +60,7 @@ export default function RegisterClient() {
   const isLoading = registerMutation.isPending;
 
   return (
-    <div className="h-full w-full flex items-center justify-center py-12 px-4">
+    <div className="h-[calc(100vh-4rem)] w-full flex items-center justify-center py-12 px-4">
       <Card className="w-full max-w-md shadow-lg">
         <CardHeader className="space-y-1 text-center">
           <CardTitle className="text-2xl font-bold">Create an account</CardTitle>

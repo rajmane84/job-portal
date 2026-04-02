@@ -33,9 +33,9 @@ export default function RootLayout({
       <body className={inter.className}>
         <Providers>
           <Navbar />
-          <main className="pt-16 h-full min-h-screen bg-gray-50">
+          <div className="pt-16 h-full min-h-screen bg-gray-50">
             {children}
-          </main>
+          </div>
           <Toaster position="top-right" />
         </Providers>
       </body>
