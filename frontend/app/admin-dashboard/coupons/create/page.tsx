@@ -43,6 +43,7 @@ export default function CreateCouponForm() {
   });
 
   const onSubmit = (data: CouponFormValues) => {
+    console.log("formdata", data);
     createCoupon(data);
   };
 
@@ -61,7 +62,6 @@ export default function CreateCouponForm() {
       <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm md:p-8">
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-            
             <div className="space-y-2">
               <Label htmlFor="code">Coupon Code</Label>
               <Input
@@ -78,8 +78,8 @@ export default function CreateCouponForm() {
 
             <div className="space-y-2">
               <Label>Discount Type</Label>
-              <Select 
-                onValueChange={(val: any) => setValue("type", val)} 
+              <Select
+                onValueChange={(val: any) => setValue("type", val)}
                 defaultValue="percentage"
               >
                 <SelectTrigger>
@@ -114,7 +114,8 @@ export default function CreateCouponForm() {
 
             <div className="space-y-2">
               <Label htmlFor="expiryDate">
-                Expiry Date <span className="font-normal text-gray-400">(optional)</span>
+                Expiry Date{" "}
+                <span className="font-normal text-gray-400">(optional)</span>
               </Label>
               <Input
                 id="expiryDate"
@@ -126,17 +127,21 @@ export default function CreateCouponForm() {
 
             <div className="space-y-2">
               <Label htmlFor="maxUses">
-                Max Uses <span className="font-normal text-gray-400">(optional)</span>
+                Max Uses{" "}
+                <span className="font-normal text-gray-400">
+                  (-1 for unlimited)
+                </span>
               </Label>
               <Input
                 id="maxUses"
                 {...register("maxUses", {
                   valueAsNumber: true,
-                  setValueAs: (v) => v === "" || isNaN(Number(v)) ? undefined : Number(v),
+                  setValueAs: (v) =>
+                    v === "" || v === null ? undefined : Number(v),
                 })}
                 type="number"
-                min="1"
-                placeholder="Unlimited"
+                // Removed min="1" to allow -1
+                placeholder="Enter -1 for unlimited"
               />
               {errors.maxUses && (
                 <p className="text-sm text-red-600">{errors.maxUses.message}</p>
@@ -157,7 +162,7 @@ export default function CreateCouponForm() {
             <Button
               type="submit"
               disabled={isPending}
-              className="w-full bg-indigo-600 hover:bg-indigo-700 sm:w-auto cursor-pointer disabled:cursor-not-allowed"
+              className="w-full cursor-pointer bg-indigo-600 hover:bg-indigo-700 disabled:cursor-not-allowed sm:w-auto"
             >
               {isPending ? (
                 <>

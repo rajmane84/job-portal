@@ -13,9 +13,11 @@ export const couponSchema = z
         isActive: z.boolean(),
         expiryDate: z.string().optional(),
         maxUses: z
-            .number({ error: "Max uses must be a number" })
+            .number({ message: "Max uses is required and it must be a number" })
             .int("Max uses must be a whole number")
-            .min(1, "Max uses must be at least 1")
+            .refine((val) => val === -1 || val >= 1, {
+                message: "Max uses must be either -1 (unlimited) or at least 1",
+            })
             .optional(),
     })
     .refine((data) => !(data.type === "percentage" && data.value > 100), {
