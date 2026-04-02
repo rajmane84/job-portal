@@ -41,7 +41,7 @@ export default function Navbar() {
 
   return (
     <nav className="bg-white/80 backdrop-blur-md border-b absolute top-0 z-50 h-16 w-full">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full">
+      <div className="px-4 sm:px-6 lg:px-8 h-full">
         <div className="flex justify-between items-center h-full">
           <Logo />
 
