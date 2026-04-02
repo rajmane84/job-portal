@@ -28,14 +28,14 @@ const Page = () => {
 
         <div className="flex flex-wrap items-center gap-3">
           <Button variant="outline" asChild>
-            <Link href="/employer/plans">
+            <Link href="/employer-dashboard/plans">
               <CreditCard className="mr-2 h-4 w-4" />
               Plans
             </Link>
           </Button>
 
           <Button variant="default" asChild>
-            <Link href="/employer/jobs/new">
+            <Link href="/employer-dashboard/jobs/new">
               <Plus className="mr-2 h-4 w-4" />
               Post New Job
             </Link>
