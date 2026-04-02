@@ -9,6 +9,8 @@ import {
   Star,
   Zap,
   AlertCircle,
+  Tag,
+  X
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -29,11 +31,61 @@ import {
 import { loadRazorpayScript } from "@/lib/razorpay-script";
 import { createOrder } from "@/features/employer/services/payment.service";
 import type { Plan } from "../types";
+import { useState } from "react";
+import { useValidateCoupon } from "../hooks/use-coupons";
 
 export function PlanCard({ plan }: { plan: Plan }) {
   const { data: session } = useSession();
   const userId = session?.user.id;
   const isUnlimited = plan.jobPostLimit === -1;
+
+  const [couponCode, setCouponCode] = useState("");
+  const [appliedCoupon, setAppliedCoupon] = useState<any>(null);
+  const [discountedPrice, setDiscountedPrice] = useState<number | null>(null);
+  const [isValidating, setIsValidating] = useState(false);
+
+  const validateMutation = useValidateCoupon();
+
+  function handleValidateCoupon() {
+    if (!couponCode.trim()) {
+      toast.error("Please enter a coupon code");
+      return;
+    }
+    setIsValidating(true);
+
+    try {
+      validateMutation.mutate(
+        {
+          code: couponCode,
+          baseAmount: plan.price,
+        },
+        {
+          onSuccess: (response) => {
+            setAppliedCoupon(response.data.coupon);
+            setDiscountedPrice(response.data.finalPrice);
+          },
+          onError: (error: any) => {
+            setAppliedCoupon(null);
+            setDiscountedPrice(null);
+            const msg = error?.response?.data?.message || "Invalid or expired coupon";
+            toast.error(msg);
+          },
+        },
+      );
+    } catch (error) {
+      console.error("Unexpected error during coupon validation:", error);
+      toast.error("An unexpected error occurred while validating the coupon.");
+    } finally {
+      setIsValidating(false);
+    }
+  }
+
+  // Helper to remove coupon
+  const removeCoupon = () => {
+    setAppliedCoupon(null);
+    setDiscountedPrice(null);
+    setCouponCode("");
+  };
 
   const handlePayment = async () => {
     const isLoaded = await loadRazorpayScript();
@@ -45,15 +97,14 @@ export function PlanCard({ plan }: { plan: Plan }) {
 
     try {
       const payload = {
-        amount: Number(plan.price) * 100,
         planId: plan._id,
         userId: userId!,
+        couponCode: appliedCoupon?.code,
         internalOrderId: `ORD_${Date.now()}_${Math.random().toString(36).substring(7)}`,
       };
 
       const orderData = await createOrder(payload);
-      console.log("Order created:", orderData);
-
+      
       const options = {
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
         amount: orderData.data.order.amount,
@@ -90,7 +141,6 @@ export function PlanCard({ plan }: { plan: Plan }) {
           : "border-border hover:shadow-lg",
       )}
     >
-      {/* Badges / Ribbons */}
       <div className="absolute top-0 right-0 flex">
         {plan.isFeatured && (
           <Badge className="bg-primary text-primary-foreground rounded-none rounded-bl-lg px-3 py-1 font-bold">
@@ -111,7 +161,6 @@ export function PlanCard({ plan }: { plan: Plan }) {
         </div>
       )}
 
-      {/* Header Section */}
       <CardHeader
         className={cn(
           "px-6 pt-10 pb-6",
@@ -134,19 +183,12 @@ export function PlanCard({ plan }: { plan: Plan }) {
           </span>
         </div>
 
-        {/* Quick Stats Tags */}
         <div className="mt-4 flex flex-wrap gap-2">
-          <Badge
-            variant="outline"
-            className="bg-background flex gap-1.5 px-2.5 py-1"
-          >
+          <Badge variant="outline" className="bg-background flex gap-1.5 px-2.5 py-1">
             <Briefcase className="text-primary h-3.5 w-3.5" />
             {formatJobLimit(plan.jobPostLimit)}
           </Badge>
-          <Badge
-            variant="outline"
-            className="bg-background flex gap-1.5 px-2.5 py-1"
-          >
+          <Badge variant="outline" className="bg-background flex gap-1.5 px-2.5 py-1">
             {isUnlimited ? (
               <Infinity className="text-primary h-3.5 w-3.5" />
             ) : (
@@ -157,8 +199,72 @@ export function PlanCard({ plan }: { plan: Plan }) {
         </div>
       </CardHeader>
 
-      {/* Features Content */}
       <CardContent className="flex-1 px-6 pt-6">
+        {/* Price Section */}
+        <div className="mb-4">
+          {discountedPrice !== null ? (
+            <div className="flex flex-col">
+              <span className="text-muted-foreground text-sm line-through">
+                {formatCurrency(plan.price, plan.currency)}
+              </span>
+              <div className="flex items-center gap-2">
+                <span className="text-2xl font-bold text-green-600">
+                  {formatCurrency(discountedPrice, plan.currency)}
+                </span>
+                <Badge variant="outline" className="text-green-600 border-green-600 text-[10px] uppercase">
+                   Save {(plan.price - discountedPrice).toFixed(2)} {plan.currency}
+                </Badge>
+              </div>
+            </div>
+          ) : (
+            <span className="text-2xl font-bold">
+              {formatCurrency(plan.price, plan.currency)}
+            </span>
+          )}
+        </div>
+
+        {/* Coupon Input & Applied State */}
+        <div className="mb-6 flex flex-col gap-2">
+          <div className="flex gap-2">
+            <input
+              type="text"
+              placeholder="Coupon Code"
+              className="border-input flex h-9 w-full rounded-md border bg-transparent px-3 py-1 text-sm uppercase shadow-sm transition-colors focus:outline-none focus:ring-1 focus:ring-primary"
+              value={couponCode}
+              onChange={(e) => setCouponCode(e.target.value)}
+              disabled={!!appliedCoupon}
+            />
+            {!appliedCoupon ? (
+              <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                onClick={handleValidateCoupon}
+                disabled={isValidating || !couponCode}
+              >
+                Apply
+              </Button>
+            ) : (
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={removeCoupon}
+                className="text-destructive hover:bg-destructive/10"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            )}
+          </div>
+
+          {appliedCoupon && (
+            <div className="flex items-center gap-2 text-xs font-medium text-green-600 animate-in fade-in slide-in-from-top-1">
+              <Tag className="h-3 w-3" />
+              <span>Coupon "{appliedCoupon.code}" Applied</span>
+            </div>
+          )}
+        </div>
+
         <ul className="space-y-3">
           {plan.features.length > 0 ? (
             plan.features.map((feature, i) => (
@@ -180,7 +286,6 @@ export function PlanCard({ plan }: { plan: Plan }) {
         </ul>
       </CardContent>
 
-      {/* Footer Action */}
       <CardFooter className="px-6 pb-8">
         <Button
           onClick={handlePayment}

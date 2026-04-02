@@ -29,3 +29,16 @@ export interface RazorpayOrder {
   created_at: number;
   offer_id: string | null;
 }
+
+export interface Coupon {
+  _id: string;
+  code: string;
+  type: "percentage" | "amount";
+  value: number;
+  isActive: boolean;
+  expiryDate?: Date;
+  maxUses: number;
+  usageCount: number;
+  createdAt: Date;
+  updatedAt: Date;
+}

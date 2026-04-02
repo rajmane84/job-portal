@@ -7,9 +7,9 @@ export interface CreateOrderResponse {
 }
 
 export const createOrder = async (orderPayload: {
-  amount: number;
   planId: string;
   userId: string;
+  couponCode: string | null;
   internalOrderId: string;
 }) => {
   const response = await apiClient.post<ApiSuccessResponse<CreateOrderResponse>>(
