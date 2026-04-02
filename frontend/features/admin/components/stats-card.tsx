@@ -9,9 +9,9 @@ const statusCardVariants = cva(
     variants: {
       variant: {
         default: "bg-card text-card-foreground border",
-        admin: "bg-linear-to-br from-slate-800 to-slate-900 text-white border-none",
-        employer: "bg-linear-to-br from-indigo-500 to-purple-600 text-white border-none",
-        success: "bg-linear-to-br from-emerald-500 to-teal-600 text-white border-none",
+        admin: "bg-slate-900 text-slate-50 border-none shadow-lg dark:bg-slate-950",
+        success: "bg-emerald-600 text-white border-none shadow-lg",
+        warning: "bg-amber-500 text-white border-none shadow-lg",
       },
     },
     defaultVariants: {
@@ -28,7 +28,7 @@ interface StatusCardProps extends VariantProps<typeof statusCardVariants> {
   className?: string;
 }
 
-export function StatusCard({
+export function AdminStatusCard({
   label,
   value,
   icon,
@@ -36,24 +36,26 @@ export function StatusCard({
   variant,
   className,
 }: StatusCardProps) {
+  const isDefault = variant === 'default';
+
   return (
     <Card className={cn(statusCardVariants({ variant }), className)}>
       <CardContent className="p-6">
         <div className="flex items-center justify-between space-x-4">
           <div className="flex flex-col space-y-1">
             <span className={cn(
-              "text-sm font-medium",
-              variant === 'default' ? "text-muted-foreground" : "text-white/80"
+              "text-sm font-medium uppercase tracking-wider",
+              isDefault ? "text-muted-foreground" : "text-white/70"
             )}>
               {label}
             </span>
-            <span className="text-xl lg:text-2xl font-bold tracking-tight">
+            <span className="text-2xl lg:text-3xl font-bold tracking-tight">
               {value}
             </span>
             {description && (
               <p className={cn(
                 "text-xs mt-1",
-                variant === 'default' ? "text-muted-foreground" : "text-white/60"
+                isDefault ? "text-muted-foreground" : "text-white/60"
               )}>
                 {description}
               </p>
@@ -62,15 +64,22 @@ export function StatusCard({
           
           {icon && (
             <div className={cn(
-              "p-2 rounded-lg",
-              variant === 'default' ? "bg-primary/10 text-primary" : "bg-white/10 text-white"
+              "p-2.5 rounded-xl flex items-center justify-center",
+              isDefault 
+                ? "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400" 
+                : "bg-white/10 text-white backdrop-blur-sm"
             )}>
-                {/* @ts-ignore */}
-              {React.cloneElement(icon as React.ReactElement, { size: 24 })}
+              {/* @ts-ignore */}
+              {React.cloneElement(icon as React.ReactElement, { size: 24, strokeWidth: 2.5 })}
             </div>
           )}
         </div>
       </CardContent>
+      
+      {/* Subtle decorative element for Admin variants */}
+      {!isDefault && (
+        <div className="absolute -right-4 -bottom-4 h-24 w-24 rounded-full bg-white/5" />
+      )}
     </Card>
   );
 }

@@ -1,4 +1,4 @@
-import { StatusCard } from "@/components/stats-card";
+import { AdminStatusCard as StatusCard  } from "@/features/admin/components/stats-card";
 import { Button } from "@/components/ui/button";
 import { DollarSign, Plus, Users, Briefcase, ShieldCheck } from "lucide-react";
 import Link from "next/link";

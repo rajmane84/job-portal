@@ -6,33 +6,35 @@ import {
   LayoutDashboard, 
   Users, 
   Briefcase, 
-  BarChart3, 
-  ShieldCheck, 
+  FileText, 
+  Building2, 
   Settings,
   LogOut,
+  PlusCircle,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 
 const menuItems = [
-  { label: "Dashboard", icon: LayoutDashboard, href: "/admin-dashboard" },
-  { label: "User Management", icon: Users, href: "/admin-dashboard/users" },
-  { label: "Pending Jobs", icon: Briefcase, href: "/admin-dashboard/jobs", badge: "43" },
-  { label: "KYC Applications", icon: ShieldCheck, href: "/admin-dashboard/kyc" },
-  { label: "Analytics", icon: BarChart3, href: "/admin-dashboard/analytics" },
-  { label: "System Settings", icon: Settings, href: "/admin-dashboard/settings" },
+  { label: "Dashboard", icon: LayoutDashboard, href: "/employer-dashboard" },
+  { label: "Post a Job", icon: PlusCircle, href: "/employer-dashboard/jobs/create" },
+  { label: "Manage Jobs", icon: Briefcase, href: "/employer-dashboard/jobs" },
+  { label: "View Applications", icon: FileText, href: "/employer-dashboard/applications", badge: "12" },
+  { label: "Manage Team", icon: Users, href: "/employer-dashboard/team" },
+  { label: "Company Settings", icon: Building2, href: "/employer-dashboard/settings" },
+  { label: "Account Settings", icon: Settings, href: "/employer-dashboard/account" },
 ]
 
-export function Sidebar({ className }: { className?: string }) {
+export default function EmployerSidebar({ className }: { className?: string }) {
   const pathname = usePathname()
 
   return (
     <div className={cn("h-[calc(100vh-4rem)] w-64 flex-col border-r bg-slate-50/50 hidden lg:flex", className)}>
       <div className="flex h-16 items-center px-6 border-b bg-white">
         <div className="size-10 rounded-lg bg-indigo-600 flex items-center justify-center">
-          <span className="text-white font-bold text-xl">SA</span>
+          <span className="text-white font-bold text-xl">EP</span>
         </div>
-        <span className="ml-3 font-bold text-lg tracking-tight text-slate-900">Super Admin</span>
+        <span className="ml-3 font-bold text-lg tracking-tight text-slate-900">Employer Panel</span>
       </div>
 
       <div className="flex-1 overflow-y-auto py-6 px-3">
