@@ -101,6 +101,9 @@ export default function Navbar() {
                 <Button size="sm" asChild>
                   <Link href="/register">Sign Up</Link>
                 </Button>
+                <Button size={"sm"} asChild>
+                  <Link href="/employer-register">Sign Up as Employer</Link>
+                </Button>
               </div>
             )}
           </div>
