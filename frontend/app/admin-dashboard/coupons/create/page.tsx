@@ -19,7 +19,7 @@ import {
   CouponFormValues,
   couponSchema,
 } from "@/features/admin/validations/coupon.schema";
-import { useCreateCoupon } from "@/features/admin/hooks/use-create-coupon";
+import { useCreateCoupon } from "@/features/admin/hooks/use-coupon";
 
 export default function CreateCouponForm() {
   const { mutate: createCoupon, isPending } = useCreateCoupon();
