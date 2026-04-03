@@ -42,3 +42,14 @@ export interface Coupon {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface Company {
+  _id: string;
+  name: string;
+  description?: string;
+  industry: string;
+  owner: string;
+  isVerified: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
