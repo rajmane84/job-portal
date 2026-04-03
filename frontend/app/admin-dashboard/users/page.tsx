@@ -36,13 +36,14 @@ const COLUMNS = [
 
 const Page = () => {
   const [searchTerm, setSearchTerm] = React.useState("");
+  const [page, setPage] = React.useState(1);
 
   const {
     data: responseData,
     isLoading,
     isError,
     refetch: refetchUsers,
-  } = useFetchAllUsers();
+  } = useFetchAllUsers(page, 10);
 
   if (isError) {
     return (
@@ -59,7 +60,61 @@ const Page = () => {
     );
   }
 
+  if (isLoading) {
+    return (
+      <div className="space-y-4">
+        <div className="flex items-center justify-between gap-4">
+          <Skeleton className="h-10 w-full max-w-sm" />
+          <Skeleton className="h-10 w-24" />
+        </div>
+        <Card>
+          <CardHeader className="pb-3">
+            <Skeleton className="mb-2 h-6 w-48" />
+            <Skeleton className="h-4 w-64" />
+          </CardHeader>
+          <CardContent>
+            <div className="rounded-md border">
+              <Table>
+                <TableHeader>
+                  <TableRow className="bg-muted/30">
+                    {COLUMNS.map((column) => (
+                      <TableHead
+                        key={column.key}
+                        className={column.key === "actions" ? "text-right" : ""}
+                      >
+                        {column.label}
+                      </TableHead>
+                    ))}
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <TableRow key={i}>
+                      {COLUMNS.map((col) => (
+                        <TableCell key={col.key}>
+                          <Skeleton
+                            className={`h-5 ${col.key === "actions" ? "ml-auto w-20" : "w-full"}`}
+                          />
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+            <div className="flex items-center justify-end space-x-2 py-4">
+              <Skeleton className="h-8 w-20" />
+              <Skeleton className="h-4 w-24" />
+              <Skeleton className="h-8 w-20" />
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   const users = responseData?.data?.users || [];
+  const pagination = responseData?.data?.pagination;
 
   // Search Logic: Filter based on Name or Email
   const filteredUsers = users.filter((user: any) => {
@@ -74,23 +129,30 @@ const Page = () => {
     if (filteredUsers.length === 0) return;
 
     // Map column labels for the header
-    const headers = COLUMNS.filter(col => col.key !== 'actions').map(col => col.label).join(",");
-    
+    const headers = COLUMNS.filter((col) => col.key !== "actions")
+      .map((col) => col.label)
+      .join(",");
+
     // Map user data
-    const csvRows = filteredUsers.map((user: any) => [
-      `"${user.firstName} ${user.lastName}"`,
-      `"${user.email}"`,
-      `"${user.companyRole}"`,
-      `"${user.isActive ? "Active" : "Inactive"}"`,
-      `"${new Date(user.createdAt).toLocaleDateString()}"`
-    ].join(","));
+    const csvRows = filteredUsers.map((user: any) =>
+      [
+        `"${user.firstName} ${user.lastName}"`,
+        `"${user.email}"`,
+        `"${user.companyRole}"`,
+        `"${user.isActive ? "Active" : "Inactive"}"`,
+        `"${new Date(user.createdAt).toLocaleDateString()}"`,
+      ].join(","),
+    );
 
     const csvContent = [headers, ...csvRows].join("\n");
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.setAttribute("href", url);
-    link.setAttribute("download", `users_export_${new Date().toISOString().split('T')[0]}.csv`);
+    link.setAttribute(
+      "download",
+      `users_export_${new Date().toISOString().split("T")[0]}.csv`,
+    );
     link.click();
   };
 
@@ -100,14 +162,20 @@ const Page = () => {
       <div className="flex items-center justify-between gap-4">
         <div className="relative max-w-sm flex-1">
           <Search className="text-muted-foreground absolute top-2.5 left-2.5 h-4 w-4" />
-          <Input 
-            placeholder="Search users..." 
-            className="bg-background pl-9" 
+          <Input
+            placeholder="Search users..."
+            className="bg-background pl-9"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
-        <Button variant="outline" onClick={handleExportCSV} className="cursor-pointer">Export CSV</Button>
+        <Button
+          variant="outline"
+          onClick={handleExportCSV}
+          className="cursor-pointer"
+        >
+          Export CSV
+        </Button>
       </div>
 
       <Card>
@@ -123,8 +191,8 @@ const Page = () => {
               <TableHeader>
                 <TableRow className="bg-muted/30">
                   {COLUMNS.map((column) => (
-                    <TableHead 
-                      key={column.key} 
+                    <TableHead
+                      key={column.key}
                       className={column.key === "actions" ? "text-right" : ""}
                     >
                       {column.label}
@@ -138,7 +206,9 @@ const Page = () => {
                     <TableRow key={i}>
                       {COLUMNS.map((col) => (
                         <TableCell key={col.key}>
-                          <Skeleton className={`h-6 ${col.key === 'actions' ? 'ml-auto w-20' : 'w-full'}`} />
+                          <Skeleton
+                            className={`h-6 ${col.key === "actions" ? "ml-auto w-20" : "w-full"}`}
+                          />
                         </TableCell>
                       ))}
                     </TableRow>
@@ -162,10 +232,28 @@ const Page = () => {
           </div>
 
           <div className="flex items-center justify-end space-x-2 py-4">
-            <Button variant="outline" size="sm" disabled>
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={!pagination?.hasPrevPage}
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              className="cursor-pointer"
+            >
               Previous
             </Button>
-            <Button variant="outline" size="sm" disabled>
+
+            <div className="px-2 text-xs font-medium">
+              Page {pagination?.currentPage || 1} of{" "}
+              {pagination?.totalPages || 1}
+            </div>
+
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={!pagination?.hasNextPage}
+              onClick={() => setPage((p) => p + 1)}
+              className="cursor-pointer"
+            >
               Next
             </Button>
           </div>

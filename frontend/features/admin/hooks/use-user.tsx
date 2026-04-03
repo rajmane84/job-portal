@@ -20,12 +20,13 @@ export const useToggleUserStatus = () => {
   });
 };
 
-export const useFetchAllUsers = () => {
+export const useFetchAllUsers = (page: number, limit: number) => {
   return useQuery({
-    queryKey: ["admin-users"],
+    queryKey: ["admin-users", page, limit],
     queryFn: async () => {
-      const data = await fetchAllUsers();
+      const data = await fetchAllUsers({ page, limit });
       return data;
     },
+    placeholderData: (previousData) => previousData,
   });
-}
+};
