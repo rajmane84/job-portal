@@ -1,3 +1,4 @@
+"use client";
 import { MoreHorizontal, Edit, Trash2, Eye } from "lucide-react";
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
@@ -11,16 +12,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export function JobRow({
   job,
-  onStatusChange,
-  isPending,
 }: {
   job: any;
-  onStatusChange: (jobId: string, newStatus: string) => void;
-  isPending: boolean;
 }) {
   // Logic to determine badge color based on status
   const getStatusColor = (status: string) => {
@@ -35,6 +32,8 @@ export function JobRow({
         return "bg-blue-100 text-blue-700 hover:bg-blue-100";
     }
   };
+
+  const router = useRouter();
 
   return (
     <TableRow className="group">
@@ -65,7 +64,7 @@ export function JobRow({
             <DropdownMenuItem>
               <button
                 type="button"
-                onClick={() => redirect(`/employer-dashboard/jobs/${job._id}`)}
+                onClick={() => router.push(`/employer-dashboard/jobs/${job._id}`)}
                 className="flex items-center cursor-pointer"
               >
                 <Eye className="mr-2 size-4" /> View Details
@@ -77,10 +76,10 @@ export function JobRow({
             <DropdownMenuSeparator />
             <DropdownMenuItem
               className="text-red-600 focus:text-red-600"
-              disabled={isPending}
-              onClick={() => onStatusChange(job._id, "deleted")}
+              // disabled={isPending}
+              // onClick={() => onStatusChange(job._id, "deleted")}
             >
-              <Trash2 className="mr-2 size-4" /> Delete
+              <Trash2 className="mr-2 size-4 hover:stroke-red-200" /> Delete
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

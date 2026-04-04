@@ -80,10 +80,6 @@ const Page = () => {
                 <JobRow
                   key={job._id}
                   job={job}
-                  //   onStatusChange={handleStatusChange}
-                  //   isPending={updateStatusMutation.isPending}
-                  onStatusChange={() => {}}
-                  isPending={false}
                 />
               ))
             )}

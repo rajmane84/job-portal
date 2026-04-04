@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   createJobPost,
+  getJobPostById,
   getMyJobPostings,
   GetMyJobPostingsResponse,
 } from "../services/job.service";
@@ -32,3 +33,11 @@ export const useCreateMyJobPosting = () => {
     },
   });
 };
+
+export const useGetJobPostById = (jobId: string) => {
+  return useQuery({
+    queryKey: ["job-post", jobId],
+    queryFn: () => getJobPostById(jobId),
+    enabled: !!jobId, // Only run the query if jobId is provided
+  });
+}
