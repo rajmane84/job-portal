@@ -19,7 +19,6 @@ const menuItems = [
   { label: "Dashboard", icon: LayoutDashboard, href: "/employer-dashboard" },
   { label: "Post a Job", icon: PlusCircle, href: "/employer-dashboard/jobs/create" },
   { label: "Manage Jobs", icon: Briefcase, href: "/employer-dashboard/jobs/manage" },
-  { label: "View Applications", icon: FileText, href: "/employer-dashboard/applications", badge: "12" },
   { label: "Manage Team", icon: Users, href: "/employer-dashboard/team" },
   { label: "Company Settings", icon: Building2, href: "/employer-dashboard/settings" },
   { label: "Account Settings", icon: Settings, href: "/employer-dashboard/account" },
@@ -56,11 +55,11 @@ export default function EmployerSidebar({ className }: { className?: string }) {
                   <item.icon className={cn("h-4 w-4", isActive ? "text-indigo-600" : "text-slate-400 group-hover:text-slate-600")} />
                   {item.label}
                 </div>
-                {item.badge && (
+                {/* {item.badge && (
                   <span className="rounded-full bg-indigo-100 px-2 py-0.5 text-[10px] font-bold text-indigo-600">
                     {item.badge}
                   </span>
-                )}
+                )} */}
               </Link>
             )
           })}

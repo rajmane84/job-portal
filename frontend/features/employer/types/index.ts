@@ -53,3 +53,32 @@ export interface Company {
   createdAt: string;
   updatedAt: string;
 }
+
+export enum ApplicationStatus {
+  PENDING = "pending",
+  REVIEWED = "reviewed",
+  SHORTLISTED = "shortlisted",
+  REJECTED = "rejected",
+  ACCEPTED = "accepted",
+  INTERVIEW = "interview",
+  OFFERED = "offered",
+  WITHDRAWN = "withdrawn",
+}
+export interface StatusHistory {
+  status: ApplicationStatus;
+  changedAt: Date;
+  changedBy: string; // Object Id
+  note: string
+}
+
+export interface Application {
+  job: string; // Object Id
+  jobSeeker: string; // Object Id
+  resume: string;
+  coverLetter: string;
+  status: ApplicationStatus;
+  statusHistory: StatusHistory[];
+  employerNotes: string;
+  createdAt: Date;
+  updatedAt: Date
+}

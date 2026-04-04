@@ -1,5 +1,5 @@
 "use client";
-import { MoreHorizontal, Edit, Trash2, Eye } from "lucide-react";
+import { MoreHorizontal, Edit, Trash2, Eye, FileUser } from "lucide-react";
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -14,11 +14,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useRouter } from "next/navigation";
 
-export function JobRow({
-  job,
-}: {
-  job: any;
-}) {
+export function JobRow({ job }: { job: any }) {
   // Logic to determine badge color based on status
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
@@ -58,17 +54,35 @@ export function JobRow({
               <MoreHorizontal className="size-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-40">
+          <DropdownMenuContent align="end" className="w-50">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
               <button
                 type="button"
-                onClick={() => router.push(`/employer-dashboard/jobs/${job._id}`)}
-                className="flex items-center cursor-pointer"
+                onClick={() =>
+                  router.push(`/employer-dashboard/jobs/${job._id}`)
+                }
+                className="flex cursor-pointer items-center"
               >
                 <Eye className="mr-2 size-4" /> View Details
               </button>
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() =>
+                router.push(`/employer-dashboard/jobs/${job._id}/applications`)
+              }
+            >
+              <FileUser className="mr-2 size-4" />
+              <span>View Applications</span>
+              {job.applicationsCount > 0 && (
+                <Badge
+                  variant="secondary"
+                  className="ml-auto px-1.5 py-0 text-[10px]"
+                >
+                  {job.applicationsCount}
+                </Badge>
+              )}
             </DropdownMenuItem>
             <DropdownMenuItem>
               <Edit className="mr-2 size-4" /> Edit Job

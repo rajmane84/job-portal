@@ -266,3 +266,20 @@ export interface Subscription {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface Experience {
+  title: string;
+  company: string;
+  location: string;
+  startDate: Date;
+  endDate?: Date;
+  current: boolean;
+  description: string;
+}
+
+export interface Education {
+  degree: string;
+  institution: string;
+  graduationYear: number;
+  fieldOfStudy: string;
+}
