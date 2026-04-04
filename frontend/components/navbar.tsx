@@ -47,7 +47,7 @@ export default function Navbar() {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-2">
-            {showFindJobs && <NavLink href="/jobs">Find Jobs</NavLink>}
+            {showFindJobs && <NavLink href="/find-jobs">Find Jobs</NavLink>}
 
             {isLoading ? (
               /* Skeleton state to prevent layout jump */
@@ -130,7 +130,7 @@ export default function Navbar() {
                   ) : (
                     <>
                       {showFindJobs && (
-                        <MobileNavLink href="/jobs" onClick={() => setOpen(false)}>
+                        <MobileNavLink href="/find-jobs" onClick={() => setOpen(false)}>
                           <Briefcase className="h-4 w-4" /> Find Jobs
                         </MobileNavLink>
                       )}

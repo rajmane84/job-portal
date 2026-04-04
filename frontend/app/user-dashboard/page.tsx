@@ -105,7 +105,7 @@ export default function JobSeekerDashboard() {
             </Link>
           </Button>
           <Button asChild>
-            <Link href="/jobs">
+            <Link href="/find-jobs">
               <Search className="mr-2 h-4 w-4" /> Browse Jobs
             </Link>
           </Button>
