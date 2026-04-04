@@ -8,6 +8,8 @@ import {
   MapPin,
   Edit2,
   KeyRound,
+  FileText,
+  ExternalLink,
 } from "lucide-react";
 
 // Shadcn UI Components
@@ -26,18 +28,6 @@ import { Separator } from "@/components/ui/separator";
 import { useGetUserDetails } from "@/hooks/use-user";
 import { useSession } from "next-auth/react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useMemo } from "react";
-
-// DUMMY DATA (Normally from an API like useAuth or useProfile)
-const dummyUser = {
-  firstName: "Aarav",
-  lastName: "Sharma",
-  email: "aarav.sharma@company.com",
-  role: "SUPER_ADMIN", // or "MANAGER", "EMPLOYEE"
-  joinedDate: "2023-05-15T10:30:00Z",
-  location: "Mumbai, India",
-  profilePicture: "", // Leave empty to test fallback
-};
 
 const Page = () => {
   const {
@@ -45,6 +35,7 @@ const Page = () => {
     isLoading: isUserLoading,
     isError,
   } = useGetUserDetails();
+  
   const { data: session, status } = useSession();
   console.log("Session Data:", session, status);
   console.log(
@@ -63,23 +54,8 @@ const Page = () => {
     return <ProfileSkeleton />;
   }
 
-  // Role Badge Configuration
-  // const roleBadgeMap: Record<
-  //   string,
-  //   {
-  //     label: string;
-  //     variant: "default" | "secondary" | "outline" | "destructive";
-  //   }
-  // > = {
-  //   SUPER_ADMIN: { label: "Super Admin", variant: "default" },
-  //   MANAGER: { label: "Manager", variant: "secondary" },
-  //   EMPLOYEE: { label: "Employee", variant: "outline" },
-  // };
-
-  // const roleInfo = roleBadgeMap[user.role] || {
-  //   label: user.role,
-  //   variant: "outline",
-  // };
+  // Logic for Job Seeker specific documents
+  const isJobSeeker = user?.role === "user" && !session?.user?.isEmployee;
 
   return (
     <div className="mx-auto max-w-7xl space-y-6 p-6">
@@ -166,7 +142,7 @@ const Page = () => {
                   Joined
                 </span>
                 <span className="text-foreground ml-auto text-right font-semibold tabular-nums">
-                  {new Date(user?.joinedDate).toLocaleDateString(undefined, {
+                  {new Date(user?.createdAt).toLocaleDateString(undefined, {
                     dateStyle: "medium",
                   })}
                 </span>
@@ -176,80 +152,126 @@ const Page = () => {
         </div>
 
         {/* Right Column - Account Settings / Details */}
-        <Card className="h-fit border shadow-sm lg:col-span-2">
-          <CardHeader className="bg-muted/20 border-b pb-4">
-            <CardTitle className="text-lg font-bold">
-              Account Information
-            </CardTitle>
-            <CardDescription>
-              This information is visible to other team members and admins.
-            </CardDescription>
-          </CardHeader>
+        <div className="space-y-6 lg:col-span-2">
+          <Card className="h-fit border shadow-sm">
+            <CardHeader className="bg-muted/20 border-b pb-4">
+              <CardTitle className="text-lg font-bold">
+                Account Information
+              </CardTitle>
+              <CardDescription>
+                This information is visible to other team members and admins.
+              </CardDescription>
+            </CardHeader>
 
-          <CardContent className="space-y-6 pt-8">
-            {/* Input fields as Read-only for similarity to table UI */}
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-              <div className="space-y-2">
-                <label className="text-muted-foreground text-sm font-bold tracking-tight">
-                  First Name
-                </label>
-                <Input
-                  value={user?.firstName ?? "fallback first name placeholder"}
-                  readOnly
-                  className="bg-muted/40 font-medium"
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-muted-foreground text-sm font-bold tracking-tight">
-                  Last Name
-                </label>
-                <Input
-                  value={user?.lastName ?? "fallback last name placeholder"}
-                  readOnly
-                  className="bg-muted/40 font-medium"
-                />
-              </div>
-              <div className="space-y-2 md:col-span-2">
-                <label className="text-muted-foreground text-sm font-bold tracking-tight">
-                  Email Address
-                </label>
-                <div className="relative">
-                  <Mail className="text-muted-foreground absolute top-3 left-3 h-4 w-4" />
+            <CardContent className="space-y-6 pt-8">
+              {/* Input fields as Read-only for similarity to table UI */}
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                <div className="space-y-2">
+                  <label className="text-muted-foreground text-sm font-bold tracking-tight">
+                    First Name
+                  </label>
                   <Input
-                    value={user?.email ?? "fallback email placeholder"}
+                    value={user?.firstName ?? "fallback first name placeholder"}
                     readOnly
-                    className="bg-muted/40 pl-10 font-mono font-medium"
+                    className="bg-muted/40 font-medium"
                   />
                 </div>
-              </div>
-            </div>
-
-            <Separator className="my-6" />
-
-            {/* Security Section */}
-            <div className="space-y-4 pt-2">
-              <div className="flex items-center gap-3">
-                <div className="bg-muted rounded-lg border p-2.5">
-                  <KeyRound className="text-muted-foreground h-5 w-5" />
+                <div className="space-y-2">
+                  <label className="text-muted-foreground text-sm font-bold tracking-tight">
+                    Last Name
+                  </label>
+                  <Input
+                    value={user?.lastName ?? "fallback last name placeholder"}
+                    readOnly
+                    className="bg-muted/40 font-medium"
+                  />
                 </div>
-                <div className="space-y-0.5">
-                  <h4 className="text-base font-bold">Change Password</h4>
-                  <p className="text-muted-foreground text-sm">
-                    It’s a good idea to use a unique password that you don't use
-                    elsewhere.
-                  </p>
+                <div className="space-y-2 md:col-span-2">
+                  <label className="text-muted-foreground text-sm font-bold tracking-tight">
+                    Email Address
+                  </label>
+                  <div className="relative">
+                    <Mail className="text-muted-foreground absolute top-3 left-3 h-4 w-4" />
+                    <Input
+                      value={user?.email ?? "fallback email placeholder"}
+                      readOnly
+                      className="bg-muted/40 pl-10 font-mono font-medium"
+                    />
+                  </div>
                 </div>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="ml-auto gap-1.5 text-xs font-bold tracking-tight uppercase"
-                >
-                  Update
-                </Button>
               </div>
-            </div>
-          </CardContent>
-        </Card>
+
+              <Separator className="my-6" />
+
+              {/* Security Section */}
+              <div className="space-y-4 pt-2">
+                <div className="flex items-center gap-3">
+                  <div className="bg-muted rounded-lg border p-2.5">
+                    <KeyRound className="text-muted-foreground h-5 w-5" />
+                  </div>
+                  <div className="space-y-0.5">
+                    <h4 className="text-base font-bold">Change Password</h4>
+                    <p className="text-muted-foreground text-sm">
+                      It’s a good idea to use a unique password that you don't
+                      use elsewhere.
+                    </p>
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="ml-auto gap-1.5 text-xs font-bold tracking-tight uppercase"
+                  >
+                    Update
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* New Resume & Cover Letter Section */}
+          {isJobSeeker && (
+            <Card className="border shadow-sm">
+              <CardHeader className="bg-muted/20 border-b pb-4">
+                <CardTitle className="flex items-center gap-2 text-lg font-bold">
+                  <FileText className="h-5 w-5 text-primary" />
+                  Application Documents
+                </CardTitle>
+                <CardDescription>
+                  Review your current professional documents.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6 pt-8">
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                  <div className="space-y-3">
+                    <label className="text-muted-foreground text-sm font-bold tracking-tight uppercase">
+                      Resume
+                    </label>
+                    <div className="flex items-center justify-between rounded-md border bg-muted/20 p-3">
+                      <span className="text-sm font-medium truncate max-w-[150px]">
+                        {user?.resumeUrl ? "My_Resume.pdf" : "No resume uploaded"}
+                      </span>
+                      {user?.resumeUrl && (
+                        <Button variant="ghost" size="sm" asChild>
+                          <a href={user.resumeUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-primary">
+                            <ExternalLink className="h-4 w-4" /> View
+                          </a>
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                  <div className="space-y-3">
+                    <label className="text-muted-foreground text-sm font-bold tracking-tight uppercase">
+                      Cover Letter
+                    </label>
+                    <div className="min-h-[100px] rounded-md border bg-muted/20 p-3 text-sm leading-relaxed text-muted-foreground">
+                      {user?.coverLetter ?? "No cover letter provided."}
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+        </div>
       </div>
     </div>
   );
