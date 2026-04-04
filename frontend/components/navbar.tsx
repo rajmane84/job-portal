@@ -60,7 +60,7 @@ export default function Navbar() {
                 {isJobSeeker && <NavLink href="/applications">My Applications</NavLink>}
                 {isEmployer && (
                   <>
-                    <NavLink href="/post-job">Post Job</NavLink>
+                    <NavLink href="/employer-dashboard/jobs/create">Post Job</NavLink>
                     <NavLink href="/company-profile">Company</NavLink>
                   </>
                 )}

@@ -18,7 +18,7 @@ import { Button } from "@/components/ui/button"
 const menuItems = [
   { label: "Dashboard", icon: LayoutDashboard, href: "/employer-dashboard" },
   { label: "Post a Job", icon: PlusCircle, href: "/employer-dashboard/jobs/create" },
-  { label: "Manage Jobs", icon: Briefcase, href: "/employer-dashboard/jobs" },
+  { label: "Manage Jobs", icon: Briefcase, href: "/employer-dashboard/jobs/manage" },
   { label: "View Applications", icon: FileText, href: "/employer-dashboard/applications", badge: "12" },
   { label: "Manage Team", icon: Users, href: "/employer-dashboard/team" },
   { label: "Company Settings", icon: Building2, href: "/employer-dashboard/settings" },
@@ -29,7 +29,7 @@ export default function EmployerSidebar({ className }: { className?: string }) {
   const pathname = usePathname()
 
   return (
-    <div className={cn("h-[calc(100vh-4rem)] w-64 flex-col border-r bg-slate-50/50 hidden lg:flex", className)}>
+    <div className={cn("min-h-[calc(100vh-4rem)] w-64 flex-col border-r bg-slate-50/50 hidden lg:flex", className)}>
       <div className="flex h-16 items-center px-6 border-b bg-white">
         <div className="size-10 rounded-lg bg-indigo-600 flex items-center justify-center">
           <span className="text-white font-bold text-xl">EP</span>

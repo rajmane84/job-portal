@@ -11,6 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { redirect } from "next/navigation";
 
 export function JobRow({
   job,
@@ -54,18 +55,24 @@ export function JobRow({
       <TableCell className="text-right">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <MoreHorizontal className="h-4 w-4" />
+            <Button variant="ghost" className="size-8 p-0">
+              <MoreHorizontal className="size-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-[160px]">
+          <DropdownMenuContent align="end" className="w-40">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
-              <Eye className="mr-2 h-4 w-4" /> View Details
+              <button
+                type="button"
+                onClick={() => redirect(`/employer-dashboard/jobs/${job._id}`)}
+                className="flex items-center cursor-pointer"
+              >
+                <Eye className="mr-2 size-4" /> View Details
+              </button>
             </DropdownMenuItem>
             <DropdownMenuItem>
-              <Edit className="mr-2 h-4 w-4" /> Edit Job
+              <Edit className="mr-2 size-4" /> Edit Job
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
@@ -73,7 +80,7 @@ export function JobRow({
               disabled={isPending}
               onClick={() => onStatusChange(job._id, "deleted")}
             >
-              <Trash2 className="mr-2 h-4 w-4" /> Delete
+              <Trash2 className="mr-2 size-4" /> Delete
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

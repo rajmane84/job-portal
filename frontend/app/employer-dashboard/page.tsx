@@ -35,7 +35,7 @@ const Page = () => {
           </Button>
 
           <Button variant="default" asChild>
-            <Link href="/employer-dashboard/jobs/new">
+            <Link href="/employer-dashboard/jobs/create">
               <Plus className="mr-2 h-4 w-4" />
               Post New Job
             </Link>
